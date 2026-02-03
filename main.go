@@ -1,27 +1,43 @@
 package main
 
 import (
-	"fmt"
 	"log"
+	"os"
 
 	"github.com/nicoki2004/gator/internal/config"
+	"github.com/nicoki2004/gator/internal/state"
 )
 
 func main() {
 	cfg, err := config.Read()
 	if err != nil {
-		log.Fatalf("error reading config: %v", err)
-	}
-	fmt.Printf("Read config: %+v\n", cfg)
-
-	err = cfg.SetUser("lane")
-	if err != nil {
-		log.Fatalf("couldn't set current user: %v", err)
+		println(err)
 	}
 
-	cfg, err = config.Read()
-	if err != nil {
-		log.Fatalf("error reading config: %v", err)
+	appState := &state.State{
+		Cfg: &cfg,
 	}
-	fmt.Printf("Read config again: %+v\n", cfg)
+
+	cmds := commands{
+		registeredCommands: make(map[string]func(*state.State, command) error),
+	}
+
+	cmds.register("login", handlerLogin)
+
+	if len(os.Args) < 2 {
+		log.Fatal("Usage: gator <command> [args...]")
+	}
+
+	cmdName := os.Args[1]
+	cmdArgs := os.Args[2:]
+
+	currentCmd := command{
+		Name: cmdName,
+		Args: cmdArgs,
+	}
+
+	err = cmds.run(appState, currentCmd)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
