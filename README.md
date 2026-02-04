@@ -202,10 +202,18 @@ Contributions are welcome. Open an issue or submit a pull request with changes a
 
 ## Follow-ups
 
-- Add unit and integration tests for handlers and database queries.
-- Add CLI `--help` output and argument validation for all commands.
-- Add support for Atom feeds and improved feed content parsing.
-- Add caching and rate-limiting for feed fetching.
+- [ ] Add unit and integration tests for handlers and database queries.
+- [ ] Add CLI `--help` output and argument validation for all commands.
+- [ ] Add support for Atom feeds and improved feed content parsing.
+- [ ] Add caching and rate-limiting for feed fetching.
+- [ ] Add sorting and filtering options to the browse command
+- [ ] Add pagination to the browse command
+- [ ] Add concurrency to the agg command so that it can fetch more frequently
+- [ ] Add a search command that allows for fuzzy searching of posts
+- [ ] Add bookmarking or liking posts
+- [ ] Add a TUI that allows you to select a post in the terminal and view it in a more readable format (either in the terminal or open in a browser)
+- [ ] Add an HTTP API (and authentication/authorization) that allows other users to interact with the service remotely
+- [ ] Write a service manager that keeps the agg command running in the background and restarts it if it crashes
 
 ## Model Graph
 
