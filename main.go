@@ -34,6 +34,7 @@ func main() {
 	dbQueries := database.New(db)
 
 	appState.Db = dbQueries
+	appState.Commands = cmds.registeredCommands
 
 	// --- User Management ---
 	cmds.register(commandDefinition{
@@ -125,6 +126,14 @@ func main() {
 		usage:       "reset",
 		minArgs:     0,
 		handler:     handlerReset,
+	})
+
+	cmds.register(commandDefinition{
+		name:        "help",
+		description: "Show this help menu",
+		usage:       "help",
+		minArgs:     0,
+		handler:     handlerHelp,
 	})
 
 	// cmds.register("register", handlerRegister)

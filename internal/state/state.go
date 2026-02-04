@@ -10,6 +10,7 @@ import (
 // State represents the synchronized state of the CLI.
 // It holds the configuration loaded from the JSON file and the database client.
 type State struct {
-	Db  *database.Queries
-	Cfg *config.Config
+	Db       *database.Queries
+	Cfg      *config.Config
+	Commands any
 }
