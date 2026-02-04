@@ -4,17 +4,13 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/nicoki2004/gator/internal/database"
 	"github.com/nicoki2004/gator/internal/state"
 )
 
-func handlerFollowing(s *state.State, cmd command) error {
+func handlerFollowing(s *state.State, cmd command, user database.User) error {
 	if len(cmd.Args) != 0 {
 		return fmt.Errorf("usage: %s <url>", cmd.Name)
-	}
-
-	user, err := s.Db.GetUserByName(context.Background(), s.Cfg.CurrentUserName)
-	if err != nil {
-		return fmt.Errorf("Error getting current user: %w", err)
 	}
 
 	feedFollows, err := s.Db.GetFeedFollowsForUser(context.Background(), user.ID)

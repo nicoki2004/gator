@@ -11,18 +11,13 @@ import (
 	"github.com/nicoki2004/gator/internal/state"
 )
 
-func handlerAddFeed(s *state.State, cmd command) error {
+func handlerAddFeed(s *state.State, cmd command, user database.User) error {
 	if len(cmd.Args) != 2 {
 		return fmt.Errorf("usage: %v <name> <url>", cmd.Name)
 	}
 
 	name := cmd.Args[0]
 	url := cmd.Args[1]
-
-	user, err := s.Db.GetUserByName(context.Background(), s.Cfg.CurrentUserName)
-	if err != nil {
-		return fmt.Errorf("Couldn't get user from db: %w", err)
-	}
 
 	params := database.CreateFeedParams{
 		ID:        uuid.New(),

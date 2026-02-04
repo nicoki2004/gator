@@ -11,7 +11,7 @@ import (
 	"github.com/nicoki2004/gator/internal/state"
 )
 
-func handlerFollow(s *state.State, cmd command) error {
+func handlerFollow(s *state.State, cmd command, user database.User) error {
 	if len(cmd.Args) != 1 {
 		return fmt.Errorf("usage: %s <url>", cmd.Name)
 	}
@@ -21,11 +21,6 @@ func handlerFollow(s *state.State, cmd command) error {
 	feed, err := s.Db.GetFeedByUrl(context.Background(), url)
 	if err != nil {
 		return fmt.Errorf("Couldn't find the feed: %w", err)
-	}
-
-	user, err := s.Db.GetUserByName(context.Background(), s.Cfg.CurrentUserName)
-	if err != nil {
-		return fmt.Errorf("Couldn't find the current user: %w", err)
 	}
 
 	err = feedFollow(s, feed, user)
