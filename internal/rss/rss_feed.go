@@ -41,6 +41,10 @@ func FetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {
 	}
 	defer res.Body.Close()
 
+	if res.StatusCode > 299 {
+		return nil, fmt.Errorf("Return failed with status code: %w", res.StatusCode)
+	}
+
 	data, err := io.ReadAll(res.Body)
 	if err != nil {
 		return nil, err
@@ -53,8 +57,6 @@ func FetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {
 	}
 
 	return rssFeed, nil
-
-	return nil, nil
 }
 
 func PrintFeed(feed *RSSFeed) {
