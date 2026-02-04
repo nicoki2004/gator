@@ -15,7 +15,7 @@ import (
 func main() {
 	cfg, err := config.Read()
 	if err != nil {
-		println(err)
+		log.Fatal("Failed to read config: check ~/.gatorconfig.json exists and is valid")
 	}
 
 	appState := &state.State{
@@ -28,7 +28,7 @@ func main() {
 
 	db, err := sql.Open("postgres", appState.Cfg.DBURL)
 	if err != nil {
-		log.Fatal("Error connecting to DB")
+		log.Fatal("Failed to connect to database: %v", err)
 	}
 
 	dbQueries := database.New(db)

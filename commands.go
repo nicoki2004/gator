@@ -1,7 +1,7 @@
 package main
 
 import (
-	"errors"
+	"fmt"
 
 	"github.com/nicoki2004/gator/internal/state"
 )
@@ -18,7 +18,7 @@ type commands struct {
 func (c *commands) run(s *state.State, cmd command) error {
 	handler, ok := c.registeredCommands[cmd.Name]
 	if !ok {
-		return errors.New("Not command found")
+		return fmt.Errorf("command not found: %q", cmd.Name)
 	}
 	return handler(s, cmd)
 }

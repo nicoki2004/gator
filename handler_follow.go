@@ -25,7 +25,7 @@ func handlerFollow(s *state.State, cmd command, user database.User) error {
 
 	err = feedFollow(s, feed, user)
 	if err != nil {
-		return fmt.Errorf("Error creating feed follow: \n", err)
+		return fmt.Errorf("Error creating feed follow: %w\n", err)
 	}
 
 	return nil

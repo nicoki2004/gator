@@ -45,7 +45,7 @@ func handlerAgg(s *state.State, cmd command) error {
 func scrapeFeeds(s *state.State) error {
 	nextfeed, err := s.Db.GetNextFeedToFetch(context.Background())
 	if err != nil {
-		return fmt.Errorf("Error getting next feed: %w", err)
+		return fmt.Errorf("failed to fetch next unprocessed feed from database: %w", err)
 	}
 
 	_, err = s.Db.MarkFeedFetched(context.Background(), nextfeed.ID)
