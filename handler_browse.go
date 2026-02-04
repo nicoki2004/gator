@@ -35,8 +35,8 @@ func handlerBrowse(s *state.State, cmd command, user database.User) error {
 	}
 
 	for _, item := range posts {
-		fmt.Printf("Title:       %s\n", item.Title)
-		fmt.Printf("Description: %s\n", item.Description)
+		fmt.Printf("Title:       %v\n", item.Title)
+		fmt.Printf("Description: %v\n", item.Description)
 		fmt.Printf("Link:        %s\n", item.Url)
 		fmt.Printf("Published:   %s\n", item.PublishedAt)
 		fmt.Println("-----------------------------------------------")
