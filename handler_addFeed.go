@@ -43,10 +43,8 @@ func handlerAddFeed(s *state.State, cmd command) error {
 }
 
 func printFeed(feed database.Feed, current string) {
-	fmt.Printf("* ID:            %s\n", feed.ID)
-	fmt.Printf("* Created:       %v\n", feed.CreatedAt)
-	fmt.Printf("* Updated:       %v\n", feed.UpdatedAt)
+	fmt.Printf("*------------------------------------------\n")
 	fmt.Printf("* Name:          %s\n", feed.Name)
 	fmt.Printf("* URL:           %s\n", feed.Url)
-	fmt.Printf("* User:       %s - %s\n", feed.UserID, current)
+	fmt.Printf("* User:       	 %s\n", current)
 }

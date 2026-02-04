@@ -9,7 +9,7 @@ VALUES (
 RETURNING *;
 
 
--- name: GetUser :one
+-- name: GetUserById :one
 SELECT * FROM users 
 WHERE id = $1;
 
