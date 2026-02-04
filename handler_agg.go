@@ -2,9 +2,14 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
+	"strings"
 	"time"
 
+	"github.com/google/uuid"
+
+	"github.com/nicoki2004/gator/internal/database"
 	"github.com/nicoki2004/gator/internal/rss"
 	"github.com/nicoki2004/gator/internal/state"
 )
@@ -53,12 +58,56 @@ func scrapeFeeds(s *state.State) error {
 		return fmt.Errorf("Error marking fetched feed: %w", err)
 	}
 
-	feed, err := rss.FetchFeed(context.Background(), nextfeed.Url)
+	rssFeeds, err := rss.FetchFeed(context.Background(), nextfeed.Url)
 	if err != nil {
 		return fmt.Errorf("Error fetching feeds: %w", err)
 	}
 
-	rss.PrintFeed(feed)
+	// rss.PrintFeed(feed)
+	err = savePost(s, rssFeeds, nextfeed.ID)
+	if err != nil {
+		return fmt.Errorf("Error saving posts: %w", err)
+	}
+	return nil
+}
+
+// Save al posts feeds to a DB
+func savePost(s *state.State, feeds *rss.RSSFeed, feed_id uuid.UUID) error {
+	for _, post := range feeds.Channel.Item {
+		title := sql.NullString{
+			String: post.Title,
+			Valid:  post.Title != "", // Es válido solo si no está vacío
+		}
+
+		description := sql.NullString{
+			String: post.Description,
+			Valid:  post.Description != "",
+		}
+
+		pubDate, err := time.Parse(time.RFC1123Z, post.PubDate)
+		if err != nil {
+			pubDate = time.Now()
+		}
+		param := database.CreatePostParams{
+			ID:          uuid.New(),
+			CreatedAt:   time.Now().UTC(),
+			UpdatedAt:   time.Now().UTC(),
+			PublishedAt: pubDate,
+			Title:       title,
+			Url:         post.Link,
+			Description: description,
+			FeedID:      feed_id,
+		}
+
+		_, err = s.Db.CreatePost(context.Background(), param)
+		if err != nil {
+			if strings.Contains(err.Error(), "duplicate key value") {
+				continue
+			}
+			return fmt.Errorf("Error saving in Db: %w", err)
+		}
+
+	}
 
 	return nil
 }

@@ -10,6 +10,9 @@ import (
 	"github.com/nicoki2004/gator/internal/state"
 )
 
+// middlewareLoggedIn is a decorator that ensures a user is present in the configuration
+// before executing a command. If the user exists in the DB, it injects the user into the handler.
+// It returns an error if no user is logged in or if the user is not found in the database.
 func middlewareLoggedIn(handler func(s *state.State, cmd command, user database.User) error) func(*state.State, command) error {
 	return func(s *state.State, cmd command) error {
 		if s.Cfg.CurrentUserName == "" {
