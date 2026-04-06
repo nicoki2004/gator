@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"html"
+	"regexp"
 	"strings"
 	"time"
 
@@ -74,14 +76,16 @@ func scrapeFeeds(s *state.State) error {
 
 // Save al posts feeds to a DB
 func savePost(s *state.State, feeds *rss.RSSFeed, feed_id uuid.UUID) error {
+
+	re := regexp.MustCompile(`<[^>]*>`)
 	for _, post := range feeds.Channel.Item {
 		title := sql.NullString{
-			String: post.Title,
+			String: html.UnescapeString(post.Title),
 			Valid:  post.Title != "", // Es válido solo si no está vacío
 		}
 
 		description := sql.NullString{
-			String: post.Description,
+			String: re.ReplaceAllString(html.UnescapeString(post.Description), ""),
 			Valid:  post.Description != "",
 		}
 
@@ -89,6 +93,7 @@ func savePost(s *state.State, feeds *rss.RSSFeed, feed_id uuid.UUID) error {
 		if err != nil {
 			pubDate = time.Now()
 		}
+
 		param := database.CreatePostParams{
 			ID:          uuid.New(),
 			CreatedAt:   time.Now().UTC(),

@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"fmt"
+	"html"
+	"regexp"
 	"strconv"
 
 	"github.com/nicoki2004/gator/internal/database"
@@ -34,9 +36,15 @@ func handlerBrowse(s *state.State, cmd command, user database.User) error {
 		return fmt.Errorf("Error Getting the posts: %w", err)
 	}
 
+	re := regexp.MustCompile(`<[^>]*>`)
 	for _, item := range posts {
-		fmt.Printf("Title:       %v\n", item.Title)
-		fmt.Printf("Description: %v\n", item.Description)
+
+		title := html.UnescapeString(item.Title.String)
+
+		description := html.UnescapeString(item.Description.String)
+
+		fmt.Printf("Title:       %v\n", re.ReplaceAllString(title, ""))
+		fmt.Printf("Description: %v\n", re.ReplaceAllString(description, ""))
 		fmt.Printf("Link:        %s\n", item.Url)
 		fmt.Printf("Published:   %s\n", item.PublishedAt)
 		fmt.Println("-----------------------------------------------")

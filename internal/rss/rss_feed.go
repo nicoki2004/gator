@@ -7,6 +7,8 @@ import (
 	"html"
 	"io"
 	"net/http"
+	"regexp"
+	"strings"
 )
 
 type RSSFeed struct {
@@ -51,6 +53,8 @@ func FetchFeed(ctx context.Context, feedURL string) (*RSSFeed, error) {
 		return nil, err
 	}
 
+	fmt.Printf("%s", data)
+
 	rssFeed := &RSSFeed{}
 	err = xml.Unmarshal(data, &rssFeed)
 	if err != nil {
@@ -66,10 +70,18 @@ func PrintFeed(feed *RSSFeed) {
 	fmt.Printf("Link:        %s\n", feed.Channel.Link)
 	fmt.Printf("Description: %s\n", html.UnescapeString(feed.Channel.Description))
 	fmt.Println("-----------------------------------------------")
+	re := regexp.MustCompile(`<[^>]*>`)
 
 	// Iterar sobre los artículos
 	for _, item := range feed.Channel.Item {
-		fmt.Printf("Title:       %s\n", html.UnescapeString(item.Title))
+		title := html.UnescapeString(item.Title)
+
+		fmt.Printf("Title:       %s\n", re.ReplaceAllString(title, ""))
+
+		description := html.UnescapeString(item.Description)
+
+		fmt.Printf("Title:       %s\n", strings.TrimSpace(re.ReplaceAllString(description, "")))
+
 		fmt.Printf("Description: %s\n", html.UnescapeString(item.Description))
 		fmt.Printf("Link:        %s\n", item.Link)
 		// Opcional: imprimir fecha si existe
